@@ -1,25 +1,43 @@
 
 
+import os
+from google.cloud.speech_v2 import SpeechClient
+from google.cloud.speech_v2.types import cloud_speech
 from google.cloud import speech
 
 
-def run_quickstart() -> speech.RecognizeResponse:
-    # Instantiates a client
-    client = speech.SpeechClient()
+def transcribe_file(speech_file: str) -> speech.RecognizeResponse:
+    """Transcribe the given audio file."""
+    client = speech.SpeechClient.from_service_account_file('keys.json')
 
-    # The name of the audio file to transcribe
-    gcs_uri = "gs://cloud-samples-data/speech/brooklyn_bridge.raw"
+    # [START speech_python_migration_sync_request]
+    # [START speech_python_migration_config]
+    with open(speech_file, "rb") as audio_file:
+        content = audio_file.read()
 
-    audio = speech.RecognitionAudio(uri=gcs_uri)
-
+    audio = speech.RecognitionAudio(content=content)
     config = speech.RecognitionConfig(
         encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
         sample_rate_hertz=16000,
-        language_code="en-US",
+        language_code="es-CO",
     )
+    # [END speech_python_migration_config]
 
-    # Detects speech in the audio file
+    # [START speech_python_migration_sync_response]
     response = client.recognize(config=config, audio=audio)
 
-    for result in response.results:
-        print(f"Transcript: {result.alternatives[0].transcript}")
+    # [END speech_python_migration_sync_request]
+    # Each result is for a consecutive portion of the audio. Iterate through
+    # them to get the transcripts for the entire audio file.
+    # for result in response.results:
+    #     # The first alternative is the most likely one for this portion.
+    #     print(f"Transcript: {result.alternatives[0].transcript}")
+    # # [END speech_python_migration_sync_response]
+
+    return response
+
+
+
+
+if __name__ == '__main__':
+    print(transcribe_file('audio.aif'))
