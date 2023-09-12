@@ -2,3 +2,5 @@
 *.docx
 *.mpeg
 keys.json
+.env
+.DS_Store

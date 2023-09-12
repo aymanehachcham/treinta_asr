@@ -1,5 +1,4 @@
-
-
+import os
 
 from google.cloud import speech
 import logging
@@ -10,12 +9,12 @@ def transcribe_file(gc_uri: str) -> speech.RecognizeResponse:
     Transcription of audio file in LINEAR16 format using Google Cloud Speech-to-Text API.
     Long format files are stored in the Google Cloud Storage bucket.
 
-    
-    param gc_uri: The path to the audio file in the Google Cloud Storage bucket.
-    return:
+    :param gc_uri: The path to the audio file in the Google Cloud Storage bucket.
+    :type gc_uri: str
+    :return: The transcript of the audio file.
     """
     logging.basicConfig(level=logging.INFO)
-    client = speech.SpeechClient.from_service_account_file('keys.json')
+    client = speech.SpeechClient.from_service_account_file('../keys.json')
     audio = speech.RecognitionAudio(uri=gc_uri)
 
     config = speech.RecognitionConfig(
@@ -49,4 +48,4 @@ def transcribe_file(gc_uri: str) -> speech.RecognizeResponse:
 
 
 if __name__ == '__main__':
-    print(transcribe_file('gs://asr_treinta_bucket/audio_sample_2_2.wav'))
+    print(transcribe_file(os.getenv('GC_URI')))
