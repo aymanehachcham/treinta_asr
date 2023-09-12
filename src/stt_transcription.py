@@ -83,7 +83,7 @@ class STT(object):
 if __name__ == '__main__':
     # print(google_file_transcription(os.getenv("GC_URI")))
     out = STT.openai_file_transcription(
-        audio_file="audio_data/audio_sample_2.wav",
+        audio_file="audio_data/audio_sample_3.wav",
         prompt_guidance='Tienes que detectar quien habla en el audio.'
     )
     print(out)

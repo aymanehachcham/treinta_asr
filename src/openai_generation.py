@@ -2,38 +2,48 @@
 
 import openai
 import os
-from stt_transcription import transcribe_file
+from stt_transcription import STT
 from dotenv import load_dotenv
-import time
 import logging
-
-logging.basicConfig(level=logging.INFO)
+from time import perf_counter
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
-openai.api_key = os.getenv('OPEN_AI_API_KEY')
 
-transcript = transcribe_file('gs://asr_treinta_bucket/audio_sample_2_2.wav')
-logging.info("Waiting for the OPEN AI api to process...")
-start = time.time()
-completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo-0613",
-    messages=[
-        {
-            "role": "system",
-            "content": "You are an assistant that provides information about a transcript audio file."
-            "The idea is that based on the prompt given, try to explain the situation of what is being said in the transcript."
-            "The transcript is given in colombian spanish."
-        },
-        {"role": "user", "content": f"This is the given transcript: {transcript}"},
+def engage_in_feedback():
+    """
+    This function is used to engage in feedback with the user.
+    The user will be asked to provide feedback on the generated transcript.
+    """
+    openai.api_key = os.getenv('OPEN_AI_API_KEY')
+    transcript = STT.openai_file_transcription(
+        audio_file="audio_data/audio_sample_2.wav",
+        prompt_guidance='Tienes que detectar quien habla en el audio.'
+    )
+    print(f"Transcript generated: {transcript}\n\n")
+    logger.info('OPENAI API is running for feedback...\n\n')
+    start_time = perf_counter()
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-0613",
+        temperature=0.2,
+        messages=[
+            {
+                "role": "system",
+                "content": "Eres un asistente que proporciona información sobre un archivo de audio transcrito."
+                           "Basándote en la situación dada, detecta quién es el entrevistador y quién es el entrevistado."
+                           "¿Cómo responderías a las preguntas del entrevistador como el entrevistado?"
+                           "Formatea tus respuestas de una manera legible"
+            },
+            {"role": "user", "content": f"Esta es la transcripción: {transcript}"},
 
-    ]
-)
+        ]
+    )
+    logger.info(f'Time taken by OPENAI GPT-3: {perf_counter() - start_time} seconds.')
+    return completion.choices[0]['message']['content']
 
-end = time.time()
-logging.info(f"\n\nTime taken by OPEN AI API: {end - start} seconds")
 
 if __name__ == '__main__':
-    print(completion.choices[0]['message']['content'])
+    print(engage_in_feedback())
 
 
