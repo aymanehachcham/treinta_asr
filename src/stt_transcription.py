@@ -5,6 +5,9 @@ import logging
 from dotenv import load_dotenv
 import openai
 from time import perf_counter
+from whispercpp import Whisper
+import sys
+from contextlib import contextmanager
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
@@ -14,7 +17,17 @@ class STT(object):
     def __init__(
             self,
     ):
-        logging.info("Initializing STT Transcription...\n\n")
+        raise RuntimeError(
+            f'{self.__class__.__name__} class cannot be instantiated. Use the static methods instead.'
+        )
+
+    @staticmethod
+    @contextmanager
+    def _supress_prints():
+        original = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
+        yield
+        sys.stdout = original
 
     @classmethod
     def google_file_transcription(cls) -> speech.RecognizeResponse:
@@ -51,6 +64,7 @@ class STT(object):
     def openai_file_transcription(
             cls,
             audio_file: os.PathLike,
+            language: str = 'en',
             prompt_guidance: str = None,
         ) -> str:
         """
@@ -72,18 +86,52 @@ class STT(object):
         transcript = openai.Audio.transcribe(
             model='whisper-1',
             file=audio,
-            language="es",
+            language=language,
             temperature=0.3,
             prompt=prompt_guidance,
         )
         logging.info(f'Time taken by OPENAI Whisper-1: {perf_counter() - start_time} seconds.')
         return '\n'.join(transcript['text'].split('.'))
 
+    @classmethod
+    def local_whisper_transcribe_file(
+            cls,
+            model_path: os.PathLike,
+            audio_file: os.PathLike,
+            language: str = 'en',
+    ) -> str:
+        """
+        Local inference of whisper model.
+        :param model_path: The path where the model is stored
+        :param audio_file: the audio file to be transcribed
+        :param language: The language used in the audio file
+        :return: A transcript.
+        """
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f'{model_path} does not exist.')
+
+        w = Whisper.from_pretrained(
+            model_name=model_path
+        )
+
+        w.params.with_language(language)
+        start_time = perf_counter()
+        output = w.transcribe_from_file(audio_file)
+
+        logging.info(f'Time taken by Local Whisper: {perf_counter() - start_time} seconds.')
+        return '\n'.join(output.split('.'))
+
+
 
 if __name__ == '__main__':
-    # print(google_file_transcription(os.getenv("GC_URI")))
-    out = STT.openai_file_transcription(
-        audio_file="audio_data/audio_sample_3.wav",
-        prompt_guidance='Tienes que detectar quien habla en el audio.'
-    )
-    print(out)
+    print(STT.local_whisper_transcribe_file(
+        model_path='models/ggml-small.bin',
+        audio_file='audio_data/audio_sample_2_16.wav',
+        language='es'
+    ))
+
+    # print(STT.openai_file_transcription(
+    #     audio_file='audio_data/audio_sample_2.wav',
+    #     language='es',
+    #     prompt_guidance='Tienes que detectar quien habla en el audio.'
+    # ))
