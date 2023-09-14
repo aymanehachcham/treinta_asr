@@ -6,9 +6,12 @@ from dotenv import load_dotenv
 import openai
 from time import perf_counter
 from whispercpp import Whisper
+import whispercpp
 import sys
 from contextlib import contextmanager
 import subprocess
+import typing
+import yaml
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
@@ -130,25 +133,52 @@ class STT(object):
             raise RuntimeError('Error during audio preprocessing.')
 
 
-        w = Whisper.from_pretrained(
+        whisper = Whisper.from_pretrained(
             model_name=model_path
         )
 
-        w.params.with_language(language)
+        whisper.params.with_language(language)
         start_time = perf_counter()
-        output = w.transcribe_from_file(os.path.join('audio_data', 'output_16.wav'))
+        output = whisper.transcribe_from_file(os.path.join('audio_data', 'output_16.wav'))
 
         logging.info(f'Time taken by Local Whisper: {perf_counter() - start_time} seconds.')
         return '\n'.join(output.split('.'))
 
+    @classmethod
+    def stream_transcription_local_whisper(
+            cls,
+            model_name: os.PathLike,
+            sample_rate: int = whispercpp.api.SAMPLE_RATE,
+            language: str = 'es',
+
+    ):
+        iterator: typing.Iterator[str] | None = None
+        with open(os.getenv('STREAM_CONFIG'), 'r') as stream: params = yaml.safe_load(stream)
+        params['sample_rate'] = sample_rate
+        params['language'] = language
+        try:
+            iterator = whispercpp.Whisper.from_pretrained(
+                model_name=model_name
+            ).stream_transcribe(**params)
+        finally:
+            assert iterator is not None, "Something went wrong!"
+            sys.stderr.writelines(
+                ["\nTranscription (line by line):\n"] + [f"{it}\n" for it in iterator]
+            )
+            sys.stderr.flush()
+
+
 
 
 if __name__ == '__main__':
-    print(STT.local_whisper_transcribe_file(
-        model_path='models/ggml-small.bin',
-        audio_file='audio_data/audio_sample_2.wav',
-        language='es'
-    ))
+    # print(STT.local_whisper_transcribe_file(
+    #     model_path='models/ggml-small.bin',
+    #     audio_file='audio_data/audio_sample_2.wav',
+    #     language='es'
+    # ))
+    STT.stream_transcription_local_whisper(
+        model_name='models/ggml-small.bin',
+    )
 
     # print(STT.openai_file_transcription(
     #     audio_file='audio_data/audio_sample_2.wav',
