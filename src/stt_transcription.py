@@ -8,6 +8,7 @@ from time import perf_counter
 from whispercpp import Whisper
 import sys
 from contextlib import contextmanager
+import subprocess
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
@@ -20,6 +21,21 @@ class STT(object):
         raise RuntimeError(
             f'{self.__class__.__name__} class cannot be instantiated. Use the static methods instead.'
         )
+
+    @staticmethod
+    def _whisper_local_audio_preprocess(input_file: os.PathLike) -> bool:
+        """
+        Preprocess the audio file to be in the LINEAR16 format.
+        :param input_file: The path to the audio file.
+        :type input_file: os.PathLike
+        :return: True if the preprocessing was successful, False otherwise.
+        """
+        try:
+            subprocess.check_call(['./whisper_convert.sh', input_file])
+            return True
+        except subprocess.CalledProcessError:
+            logging.error("Error during audio preprocessing.")
+            exit(1)
 
     @staticmethod
     @contextmanager
@@ -110,13 +126,17 @@ class STT(object):
         if not os.path.exists(model_path):
             raise FileNotFoundError(f'{model_path} does not exist.')
 
+        if not cls._whisper_local_audio_preprocess(audio_file):
+            raise RuntimeError('Error during audio preprocessing.')
+
+
         w = Whisper.from_pretrained(
             model_name=model_path
         )
 
         w.params.with_language(language)
         start_time = perf_counter()
-        output = w.transcribe_from_file(audio_file)
+        output = w.transcribe_from_file(os.path.join('audio_data', 'output_16.wav'))
 
         logging.info(f'Time taken by Local Whisper: {perf_counter() - start_time} seconds.')
         return '\n'.join(output.split('.'))
@@ -126,7 +146,7 @@ class STT(object):
 if __name__ == '__main__':
     print(STT.local_whisper_transcribe_file(
         model_path='models/ggml-small.bin',
-        audio_file='audio_data/audio_sample_2_16.wav',
+        audio_file='audio_data/audio_sample_2.wav',
         language='es'
     ))
 
