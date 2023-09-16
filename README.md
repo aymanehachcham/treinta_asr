@@ -42,8 +42,40 @@ This repository provides an integrated solution for STT and Text Generation task
 4. **Download the local models**:
 
    ```bash
-   Will have a script bash doing it.
+   cd models
+   sh download_llama_13b.sh
    ```   
+   ```bash
+   sh download_whisper.sh $model_name
+   ```
+    Give the model name as an argument, for example:
+   ```bash
+   sh download_whisper.sh base.en 
+   ```
+      
+   ### The available models are:
+      - tiny.en
+      - tiny
+      - tiny-q5_1
+      - tiny.en-q5_1
+      - base.en
+      - base
+      - base-q5_1
+      - base.en-q5_1
+      - small.en
+      - small.en-tdrz
+      - small
+      - small-q5_1
+      - small.en-q5_1
+      - medium
+      - medium.en
+      - medium-q5_0
+      - medium.en-q5_0
+      - large-v1
+      - large
+      - large-q5_0
+
+
 ## Modules Explanation
 
 - **STT Modules**:
