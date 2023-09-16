@@ -5,3 +5,9 @@ keys.json
 .env
 .DS_Store
 *.wav
+*.bin
+*.so
+models/llama-13b
+models/ggml-base.bin
+models/ggml-small.bin
+__pycache__/
