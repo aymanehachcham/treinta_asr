@@ -156,6 +156,7 @@ class STT(object):
         with open(os.getenv('STREAM_CONFIG'), 'r') as stream: params = yaml.safe_load(stream)
         params['sample_rate'] = sample_rate
         params['language'] = language
+        print(params)
         try:
             iterator = whispercpp.Whisper.from_pretrained(
                 model_name=model_name

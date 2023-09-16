@@ -2,11 +2,9 @@
 import whispercpp as w
 import typing as t
 import sys
-import os
 
 
 def main(**kwargs: t.Any):
-    kwargs.pop("list_audio_devices")
     iterator: t.Iterator[str] | None = None
     try:
         iterator = w.Whisper.from_pretrained(
@@ -25,7 +23,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--device_id", type=int, help="Choose the audio device", default=0
+        "--device_id", type=int, help="Choose the audio device", default=1
     )
     parser.add_argument(
         "--length_ms",
@@ -49,7 +47,7 @@ if __name__ == "__main__":
         "--step_ms",
         type=int,
         help="Step size of the audio buffer in milliseconds",
-        default=2000,
+        default=4000,
     )
     parser.add_argument(
         "--keep_ms",
@@ -63,18 +61,13 @@ if __name__ == "__main__":
         help="Maximum number of tokens to decode",
         default=100,
     )
-    parser.add_argument("--audio_ctx", type=int, help="Audio context", default=0)
     parser.add_argument(
-        "--list_audio_devices",
-        action="store_true",
-        default=False,
-        help="Show available audio devices",
+        "--language",
+        type=str,
+        default='es',
     )
+    parser.add_argument("--audio_ctx", type=int, help="Audio context", default=0)
 
     args = parser.parse_args()
-
-    if args.list_audio_devices:
-        w.utils.available_audio_devices()
-        sys.exit(0)
 
     main(**vars(args))
