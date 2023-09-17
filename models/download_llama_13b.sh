@@ -1,25 +1,11 @@
 #!/bin/bash
 
 # Set the source URL and model name
-src="https://huggingface.co/TheBloke/Llama-2-13B-GGUF/blob/main"
-model="llama-2-13b.Q6_K.gguf"
-
-# Get the directory path of this script
-function get_script_path() {
-    if [ -x "$(command -v realpath)" ]; then
-        echo "$(dirname "$(realpath "$0")")"
-    else
-        local ret="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P)"
-        echo "$ret"
-    fi
-}
-
-models_path="$(get_script_path)"
+src="https://huggingface.co/TheBloke/Llama-2-13B-GGUF"
+model="llama-2-13b.Q4_K_M.gguf"
 
 # Download model
 printf "Downloading model $model from '$src' ...\n"
-
-cd "$models_path"
 
 if [ -f "$model" ]; then
     printf "Model $model already exists. Skipping download.\n"
@@ -41,4 +27,4 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-printf "Done! Model '$model' saved in '$models_path/$model'\n"
+printf "Done! Model '$model' saved as '$model'\n"

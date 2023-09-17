@@ -59,10 +59,28 @@ def ask_llama(
 
 
 if __name__ == '__main__':
-    print(ask_llama(
-        model_path='models/llama-13b/llama-2-13b.Q4_K_S.gguf',
-        prompt='Question: How to run faclon 180B in my local machine?\n'
-               'Answer: '
-    ))
+    # print(ask_llama(
+    #     model_path='models/llama-13b/llama-2-13b.Q4_K_S.gguf',
+    #     prompt='Question: How to run faclon 180B in my local machine?\n'
+    #            'Answer: '
+    # ))
+    from langchain.llms import CTransformers
+    import yaml
+
+    # load yaml config file:
+    with open('config_llama.yaml', 'r') as stream:
+        config = yaml.safe_load(stream)
+
+    print(config)
+
+
+    llm = CTransformers(model='models/llama-13b/llama-2-13b.Q4_K_M.gguf')
+
+    print(llm('AI is going to'))
+
+
+
+
+
 
 
