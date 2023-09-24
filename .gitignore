@@ -11,3 +11,4 @@ models/llama-13b
 models/ggml-base.bin
 models/ggml-small.bin
 __pycache__/
+env
