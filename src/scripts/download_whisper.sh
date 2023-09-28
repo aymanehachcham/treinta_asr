@@ -79,7 +79,7 @@ fi
 
 printf "Downloading ggml model $model from '$src' ...\n"
 
-cd "$models_path"
+cd "$2"
 
 if [ -f "ggml-$model.bin" ]; then
     printf "Model $model already exists. Skipping download.\n"
@@ -103,6 +103,4 @@ if [ $? -ne 0 ]; then
 fi
 
 printf "Done! Model '$model' saved in 'models/ggml-$model.bin'\n"
-printf "You can now use it like this:\n\n"
-printf "  $ ./main -m models/ggml-$model.bin -f samples/jfk.wav\n"
 printf "\n"
