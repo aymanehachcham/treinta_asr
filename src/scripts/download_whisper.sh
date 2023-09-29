@@ -53,14 +53,15 @@ function list_models {
     printf "\n\n"
 }
 
-if [ "$#" -ne 1 ]; then
-    printf "Usage: $0 <model>\n"
+if [ "$#" -ne 2 ]; then
+    printf "Usage: $0 <model> <output_dir>\n"
     list_models
 
     exit 1
 fi
 
 model=$1
+output_dir="$2"
 
 if [[ ! " ${models[@]} " =~ " ${model} " ]]; then
     printf "Invalid model: $model\n"
@@ -79,7 +80,7 @@ fi
 
 printf "Downloading ggml model $model from '$src' ...\n"
 
-cd "$2"
+cd $output_dir
 
 if [ -f "ggml-$model.bin" ]; then
     printf "Model $model already exists. Skipping download.\n"
