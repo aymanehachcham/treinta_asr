@@ -1,3 +1,10 @@
+first load:
+    - check default folder structure
+      - if not exists create it
+    - load default config
+    - validate config
+    - save config to the user root path
+
 folder structure
     /home/user/.asr/models
     /home/user/.asr/config.toml

@@ -31,3 +31,4 @@ tqdm==4.66.1
 urllib3==1.26.16
 whispercpp==0.0.17
 yarl==1.9.2
+pydantic

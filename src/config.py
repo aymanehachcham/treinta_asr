@@ -1,12 +1,13 @@
 
 import os
-import requests
-from tqdm import tqdm
 from subprocess import Popen
 from pathlib import Path
 import logging
+
 from whispercpp import Whisper
 import toml
+import requests
+from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -118,11 +119,6 @@ class ModelConfig:
 
         whisper_config = toml.load('../config/whisper_config.toml')
         return Whisper.from_params(model_name=full_path, params=whisper_config['init_config_defaults'])
-
-
-
-
-
 
 
 if __name__ == '__main__':
