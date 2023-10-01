@@ -1,7 +1,0 @@
-device_id: 1
-length_ms: 5000
-n_threads: 8
-steps_ms: 3500
-keep_ms: 200
-max_tokens: 100
-audio_ctx: 0

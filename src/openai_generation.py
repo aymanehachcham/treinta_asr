@@ -68,7 +68,7 @@ if __name__ == '__main__':
     import yaml
 
     # load yaml config file:
-    with open('config_llama.yaml', 'r') as stream:
+    with open('../config/config_llama.yaml', 'r') as stream:
         config = yaml.safe_load(stream)
 
     print(config)
