@@ -63,7 +63,8 @@ repos:
                       too-many-arguments,
                       redefined-outer-name,
                       ungrouped-imports,
-                      unspecified-encoding
+                      unspecified-encoding,
+                      wrong-import-order,
 
           - "--notes=FIXME,XXX"
 
