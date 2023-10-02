@@ -144,6 +144,7 @@ class ModelConfig:
 
 
 if __name__ == '__main__':
+    # How to use the config class
     with open('../config.toml', 'r') as f:
         config = toml.load(f)
 

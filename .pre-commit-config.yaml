@@ -62,7 +62,8 @@ repos:
                       too-many-instance-attributes,
                       too-many-arguments,
                       redefined-outer-name,
-                      ungrouped-imports
+                      ungrouped-imports,
+                      unspecified-encoding
 
           - "--notes=FIXME,XXX"
 
