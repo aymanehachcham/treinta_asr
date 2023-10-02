@@ -1,34 +1,17 @@
 
-import os
+
 from utils import is_valid_url
+from typing import List, Tuple
 from pydantic import BaseModel, field_validator
+import toml
 
 
 class CFGGeneral(BaseModel):
     root_path: str
-    whisper_url: str
+    available_whisper_models: List[Tuple[str, str]]
 
-    @field_validator('root_path')
-    def validate_root_path(cls, path):
-        # assert that the path exists
-        assert os.path.exists(path), f'Invalid path: {path}'
-        return path
-
-    @field_validator('whisper_url')
-    def validate_whisper_url(cls, url):
-        # assert that the url is valid
-        assert is_valid_url(url), f'Invalid url: {url}'
-        return url
-
-class CFGModel(BaseModel):
-    model_name: str
-    version: str
-    download_path: str
-    download_version: str
-    size: str
-
-class CFGWhisper(CFGModel):
-    n_vocab: str
+class CFGWhisper(BaseModel):
+    n_vocab: int
     n_audio_ctx: int
     n_audio_state: int
     n_audio_head: int
@@ -40,8 +23,30 @@ class CFGWhisper(CFGModel):
     n_mels: int
     f16: int
 
+class WhisperSerial(BaseModel):
+    name: str
+    download_url: str
+    size: str
+    checksum: str
+    config: CFGWhisper
+
+    @field_validator('download_url')
+    def validate_whisper_url(cls, url):
+        # assert that the url is valid
+        assert is_valid_url(url), f'Invalid url: {url}'
+        return url
+
+class CFGModel(BaseModel):
+    whisper: WhisperSerial
+
 class CFGProgram(BaseModel):
     general: CFGGeneral
-    whisper: CFGWhisper
+    models: CFGModel
+
+if __name__ == '__main__':
+    with open('../config.toml', 'r') as f:
+        config = toml.load(f)
+
+
 
 
