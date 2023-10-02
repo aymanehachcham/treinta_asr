@@ -1,29 +1,49 @@
 [general]
 root_path = "~/.asr"
+whisper_url = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml"
 
-
+# General set of attributes for all models
 [models]
-[models.llama]
-[models.llama.general]
-version = ""
-download_path = ""
-download_version = ""
-size = ""
 
-[models.llama.config]
-n_vocab       = 0
-
-
+# Whisper Model config
 [models.whisper]
-n_vocab       = ""
-n_audio_ctx   = 1500
+name = "tiny.en"
+version = "v1"
+download_path = "~/.asr/models/whisper"
+checksum = "f281eb45af861ab5e5297d23694b7d46e090c02c"
+size = "77.7 MB"
+available_models = [
+    "tiny.en",
+    "tiny",
+    "tiny-q5_1",
+    "tiny.en-q5_1",
+    "base.en",
+    "base",
+    "base-q5_1",
+    "base.en-q5_1",
+    "small.en",
+    "small.en-tdrz",
+    "small",
+    "small-q5_1",
+    "small.en-q5_1",
+    "medium",
+    "medium.en",
+    "medium-q5_0",
+    "medium.en-q5_0",
+    "large-v1",
+    "large",
+    "large-q5_0",
+]
+[models.whisper.config]
+n_vocab = 0
+n_audio_ctx = 1500
 n_audio_state = 384
-n_audio_head  = 6
+n_audio_head = 6
 n_audio_layer = 4
-n_text_ctx    = 448
-n_text_state  = 384
-n_text_head   = 6
-n_text_layer  = 4
-n_mels        = 80
-f16           = 1
-type          = 1
+n_text_ctx = 448
+n_text_state = 384
+n_text_head = 6
+n_text_layer = 4
+n_mels = 80
+f16 = 1
+
