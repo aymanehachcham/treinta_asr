@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Literal
 from whispercpp import Whisper
 from tqdm import tqdm
-
 from utils import get_model_size
 from config_schema import CFGProgram, WhisperSerial
 
