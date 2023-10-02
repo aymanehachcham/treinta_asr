@@ -1,6 +1,17 @@
 [general]
 root_path = "~/.asr"
-whisper_url = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml"
+available_whisper_models = [
+    ["tiny", "bd577a113a864445d4c299885e0cb97d4ba92b5f"],
+    ["tiny.en", "c78c86eb1a8faa21b369bcd33207cc90d64ae9df"],
+    ["base", "465707469ff3a37a2b9b8d8f89f2f99de7299dac"],
+    ["base.en", "137c40403d78fd54d454da0f9bd998f78703390c"],
+    ["small", "55356645c2b361a969dfd0ef2c5a50d530afd8d5"],
+    ["small.en", "db8a495a91d927739e50b3fc1cc4c6b8f6c2d022"],
+    ["medium", "fd9727b6e1217c2f614f9b698455c4ffd82463b4"],
+    ["medium.en", "8c30f0e44ce9560643ebd10bbe50cd20eafd3723"],
+    ["large-v1", "b1caaf735c4cc1429223d5a74f0f4d0b9b59a299"],
+    ["large", "0f4c8e34f21cf1a914c59d8b3ce882345ad349d6"],
+]
 
 # General set of attributes for all models
 [models]
@@ -8,34 +19,11 @@ whisper_url = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml"
 # Whisper Model config
 [models.whisper]
 name = "tiny.en"
-version = "v1"
-download_path = "~/.asr/models/whisper"
-checksum = "f281eb45af861ab5e5297d23694b7d46e090c02c"
+download_url = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml"
 size = "77.7 MB"
-available_models = [
-    "tiny.en",
-    "tiny",
-    "tiny-q5_1",
-    "tiny.en-q5_1",
-    "base.en",
-    "base",
-    "base-q5_1",
-    "base.en-q5_1",
-    "small.en",
-    "small.en-tdrz",
-    "small",
-    "small-q5_1",
-    "small.en-q5_1",
-    "medium",
-    "medium.en",
-    "medium-q5_0",
-    "medium.en-q5_0",
-    "large-v1",
-    "large",
-    "large-q5_0",
-]
+checksum = "c78c86eb1a8faa21b369bcd33207cc90d64ae9df"
 [models.whisper.config]
-n_vocab = 0
+n_vocab = 1
 n_audio_ctx = 1500
 n_audio_state = 384
 n_audio_head = 6
