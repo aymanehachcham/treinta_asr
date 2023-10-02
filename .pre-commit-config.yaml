@@ -1,0 +1,74 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+      - id: trailing-whitespace
+        stages: [manual, commit]
+        files: \.(ts|tf|xml|scss|html|py|json|yaml|yml|jinja2)$
+      - id: end-of-file-fixer
+        stages: [manual, commit]
+        files: \.(ts|tf|xml|scss|html|py|json|yaml|yml|jinja2)$
+      - id: check-yaml
+        stages: [manual, commit]
+        args: [--allow-multiple-documents]
+        exclude: ^k8s-ops/
+      - id: debug-statements
+        stages: [manual, commit]
+      - id: check-added-large-files
+        stages: [manual, commit]
+        args: ["--maxkb=2048"]
+      - id: check-symlinks
+        stages: [manual, commit]
+      - id: check-toml
+        stages: [manual, commit]
+      - id: check-merge-conflict
+        stages: [manual, commit]
+      - id: check-json
+        stages: [manual, commit]
+
+  - repo: https://github.com/psf/black
+    rev: 22.12.0
+    hooks:
+      - id: black
+        stages: [manual, commit]
+        args: [--line-length=120]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 5.0.4
+    hooks:
+      - id: flake8
+        stages: [manual, commit]
+        args: ["--max-line-length=120"]
+
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.15.10
+    hooks:
+      - id: pylint
+        stages: [manual, commit]
+        args:
+          - >-
+            --disable=no-name-in-module,
+                      import-error,
+                      missing-module-docstring,
+                      duplicate-code,
+                      logging-fstring-interpolation,
+                      line-too-long,
+                      too-few-public-methods,
+                      redefined-builtin,
+                      protected-access,
+                      invalid-name,
+                      raise-missing-from,
+                      too-many-locals,
+                      too-many-instance-attributes,
+                      too-many-arguments,
+                      redefined-outer-name,
+                      ungrouped-imports
+
+          - "--notes=FIXME,XXX"
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
+    rev: v1.0.5
+    hooks:
+      - id: python-bandit-vulnerability-check
+        stages: [manual, commit]
+        args: [--skip, "B101", --recursive, clumper]
