@@ -22,6 +22,12 @@ class ModelConfig:
             config: CFGProgram,
             dirname: Literal['models', 'config']
     ):
+        """
+        Get the directory path for the models or config folder.
+        :param config: The config object for the whole program
+        :param dirname: Either 'models' or 'config'
+        :return: directory path created
+        """
         dir_path = Path(os.path.expanduser(config.general.root_path)) / dirname
         if not dir_path.exists():
             dir_path.mkdir(parents=True)
@@ -37,7 +43,8 @@ class ModelConfig:
         """
         Download whisper model from huggingface, following a specific routine.
         :param model_name: The name of the model
-        :return: Optional[str] The name of the model if it was downloaded successfully, None otherwise.
+        :param config: The config object for the whole program
+        :return: None
         """
         full_model_path = os.path.join(cls.__get_dir(config, 'models'), f'ggml-{model_name}.bin')
         full_config_path = os.path.join(cls.__get_dir(config, 'config'), f'ggml-{model_name}.toml')
@@ -109,6 +116,12 @@ class ModelConfig:
             model_name: str,
             config: CFGProgram,
     ) -> Whisper:
+        """
+        Load a whisper model from the local disk, with default config.
+        :param model_name: name of the model to load
+        :param config: The config object for the whole program
+        :return: A Whisper instance from whispercpp
+        """
         # Check if _download_whisper_model has been called before
         if not os.path.exists(os.path.join(cls.__get_dir(config, 'models'), f'ggml-{model_name}.bin')):
             logging.info(f'Model {model_name} not found. Downloading it ... \n')
